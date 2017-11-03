@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Abdullah Esmail"]
   spec.email         = ["abdullah.esmail@gmail.com"]
 
-  spec.summary       = %q{Making android development easy and enjoyable}
-  spec.description   = %q{This gem was inspired by the rmq gem for iOS}
+  spec.summary       = %q{Making RubyMotion android development easy and enjoyable}
+  spec.description   = %q{Making RubyMotion android development easy and enjoyable}
   spec.homepage      = "https://github.com/aesmail/android-query"
   spec.license       = "MIT"
 
