@@ -15,7 +15,7 @@ It's intended for developers who prefer to code their UIs rather than use a GUI 
 Add this line to your application's Gemfile:
 
 ```ruby
-  gem 'android_query', '~> 0.0.1'
+  gem 'android_query', '~> 0.0.4'
 ```
 
 And then execute:

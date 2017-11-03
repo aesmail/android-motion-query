@@ -1,11 +1,14 @@
 # coding: utf-8
 
+require 'rubygems'
+
 unless defined?(Motion::Project::Config)
-  raise "This gem works only within a RubyMotion android project."
+  raise "This file must be required within a RubyMotion project Rakefile."
 end
 
-lib_dir_path = File.dirname(File.expand_path(__FILE__))
-
 Motion::Project::App.setup do |app|
-  app.files.unshift(Dir.glob(File.join(lib_dir_path, "android_query/**/*.rb")))
+  Dir.glob(File.join(File.dirname(__FILE__), "android_query/**/*.rb")).each do |file|
+    app.files.unshift(file)
+    app.api_version = '21'
+  end
 end

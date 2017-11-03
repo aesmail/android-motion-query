@@ -8,20 +8,11 @@ Gem::Specification.new do |spec|
   spec.version       = AndroidQuery::VERSION
   spec.authors       = ["Abdullah Esmail"]
   spec.email         = ["abdullah.esmail@gmail.com"]
-
   spec.summary       = %q{Making RubyMotion android development easy and enjoyable}
   spec.description   = %q{Making RubyMotion android development easy and enjoyable}
   spec.homepage      = "https://github.com/aesmail/android-query"
   spec.license       = "MIT"
-
-
-  files = []
-  files << 'README.md'
-  files.concat(Dir.glob('lib/**/*.rb'))
-  spec.files         = files
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.files         = Dir.glob('lib/**/*.rb') << 'README.md' << 'LICENSE.txt'
   spec.require_paths = ["lib"]
-
-  spec.add_development_dependency "bundler", "~> 1.15"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rake"
 end
