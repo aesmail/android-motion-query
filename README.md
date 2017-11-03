@@ -1,4 +1,4 @@
-# AndroidQuery
+# Android Query
 
 This gem is in its very early development. Please don't use in production.
 
