@@ -12,15 +12,20 @@ module AndroidQuery
   
   
   class View
-    attr_accessor :original_view, :options, :activity
+    attr_accessor :original_view, :options, :activity, :stylesheet
     
-    def initialize(view, options = {}, activity)
+    def initialize(view, options = {}, activity, stylesheet)
       puts "Inside View initialize()"
       self.activity = activity
       self.original_view = view
       self.options = options
+      self.stylesheet = stylesheet
       parse_options(options)
       self
+    end
+    
+    def apply_style(style_method)
+      
     end
     
     def parse_options(options)
@@ -36,12 +41,14 @@ module AndroidQuery
         id: nil,
       }.merge(options)
       puts "merged all options..."
-      # TODO debug this issue, apparently the "options[:w].is_a? Symbol" line is making troubel
-      self.options[:width] = options[:w] == :mp ? Android::View::ViewGroup::LayoutParams::MATCH_PARENT : options[:w]
+      puts LAYOUT_SIZE_OPTIONS
+      puts LAYOUT_SIZE_OPTIONS.has_key?(options[:w])
+      self.options[:width] = LAYOUT_SIZE_OPTIONS.has_key?(self.options[:w]) ? LAYOUT_SIZE_OPTIONS[self.options[:w]] : self.options[:w]
+      puts self.options[:width]
       puts "set :width"
-      self.options[:height] = options[:h].is_a? Symbol ? LAYOUT_SIZE_OPTIONS[options[:h]] : options[:h]
+      self.options[:height] = LAYOUT_SIZE_OPTIONS.has_key?(self.options[:h]) ? LAYOUT_SIZE_OPTIONS[self.options[:h]] : self.options[:h]
       puts "set :height"
-      self.options[:orientation] = ORIENTATION_OPTIONS[optinos[:o]]
+      self.options[:orientation] = ORIENTATION_OPTIONS[self.options[:o]]
       puts "set :orientation"
     end
     
@@ -65,50 +72,53 @@ module AndroidQuery
       self.get.getHeight
     end
     
-    def layout(type, options = {}, &block)
-      l = AndroidQuery::AQLayout.new(type, options, self.activity)
+    def linear_layout(style_method, options = {}, &block)
+      l = AndroidQuery::LinearLayout.new(options, self.activity)
       self.view.get.addView(l)
       block.call(l) if block_given?
       l
     end
     
-    def add(view, options, &block)
-      new_view = AndroidQuery::View.new(view, options, self.activity)
+    def add(view, style_method, options, &block)
+      new_view = AndroidQuery::View.new(view, options, self.activity, self.stylesheet)
+      new_view.apply_style(style_method)
       self.view.get.addView(new_view.get)
       block.call(new_view) if block_given?
       new_view
     end
     
-    def text_view(options = {})
-      v = AndroidQuery::TextView.new(self.activity)
-      add(v, options)
+    def text_view(style_method, options = {})
+      v = Android::Widget::TextView.new(self.activity)
+      add(v, style_method, options)
     end
     
-    def edit_text(options = {})
-      v = AndroidQuery::EditText.new(self.activity)
-      add(v, options)
+    def edit_text(style_method, options = {})
+      v = Android::Widget::EditText.new(self.activity)
+      add(v, style_method, options)
     end
     
-    def button(options = {})
-      v = AndroidQuery::Button.new(self.activity)
-      add(v, options)
+    def button(style_method, options = {})
+      v = Android::Widget::Button.new(self.activity)
+      add(v, style_method, options)
     end
   end
   
   class Layout
     attr_accessor :view, :layout_params, :param_class
     
-    def create_android_query_view(view, options, context)
+    def create_android_query_view(view, options, context, style)
       puts "Inside create_android_query_view()"
-      self.view = AndroidQuery::View.new(view, options, context)
+      self.view = AndroidQuery::View.new(view, options, context, style)
     end
   end
   
   class LinearLayout < Layout
-    def initialize(options, context)
+    def initialize(style_method, options, context, style)
       puts "Inside LinearLayout initialize()"
       view = Android::Widget::LinearLayout.new(context)
-      create_android_query_view(view, options, context)
+      create_android_query_view(view, options, context, style)
+      self.view.apply_style(style_method)
+      puts self.view.options
       self.set_layout_params(self.view.options)
       self.view
     end
@@ -116,10 +126,15 @@ module AndroidQuery
     def set_layout_params(options)
       puts "Inside set_layout_params()"
       self.param_class = Android::Widget::LinearLayout::LayoutParams
+      puts "This line should appear fine..."
       self.layout_params = self.param_class.new(options[:width], options[:height])
+      puts "Initiated the layout params..."
       self.layout_params.weight = options[:weight]
-      self.setWeightSum(options[:weight_sum])
+      puts "We are 3 lines in set_layout_params()..."
+      puts "Weight Sum: #{options[:weight_sum]}"
+      self.setWeightSum(options[:weight_sum].to_f)
       self.view.get.setLayoutParams(self.layout_params)
+      puts "Inside end of set_layout_params()"
       self.view
     end
   end
@@ -166,21 +181,21 @@ module AndroidQuery
 end
 
 class AndroidQuery
-  attr_accessor :activity
-  def initialize(activity)
+  attr_accessor :activity, :stylesheet
+  def initialize(activity, stylesheet)
     self.activity = activity
+    self.stylesheet = stylesheet.new
   end
   
-  def layout(type, options = {}, &block)
-    l = case type
-        when :linear
-          AndroidQuery::LinearLayout.new(options, self.activity)
-        when :relative
-          AndroidQuery::RelativeLayout.new(options, self.activity)
-        when :frame
-          AndroidQuery::FrameLayout.new(options, self.activity)
-        end
-    block.call(l) if block_given?
-    l
+  def linear_layout(style_method, options = {}, &block)
+    layout = AndroidQuery::LinearLayout.new(style_method, options, self.activity, self.stylesheet)
+    block.call(layout) if block_given?
+    layout
+  end
+  
+  def relative_layout(options = {}, &block)
+    layout = AndroidQuery::RelativeLayout.new(options, self.activity, self.stylesheet)
+    block.call(layout) if block_given?
+    layout
   end
 end
