@@ -1,178 +1,174 @@
-# class AndroidQuery
-#   attr_accessor :activity
-#
-#   def initialize(source)
-#     self.activity = source
-#   end
-#
-#   def layout(layout_sym, options = {}, &block)
-#     layout_info = get_layout(layout_sym, options)
-#     my_layout = create_layout_with_params(layout_info, options)
-#     block_layout = {
-#       layout: my_layout,
-#       layout_class: layout_info[:layout_class],
-#       params_class: layout_info[:params_class],
-#       layout_sym: layout_sym,
-#       parent: layout_info[:parent],
-#     }
-#     block.call(block_layout)
-#     block_layout[:parent][:layout].addView(my_layout) if block_layout[:parent]
-#     set_content(block_layout) if block_layout[:parent].nil?
-#     block_layout
-#   end
-#
-#   def text_view(layout, options = {})
-#     tv = Android::Widget::TextView.new(self.activity)
-#     create_view_layout_params(tv, layout, options)
-#   end
-#
-#   def edit_text(layout, options = {})
-#     et = Android::Widget::EditText.new(self.activity)
-#     create_view_layout_params(et, layout, options)
-#   end
-#
-#   def button(layout, options = {})
-#     btn = Android::Widget::Button.new(self.activity)
-#     create_view_layout_params(btn, layout, options)
-#   end
-#
-#   def set_content(layout, params = {})
-#     self.activity.setContentView(layout[:layout])
-#   end
-#
-#   def get_layout(layout, options)
-#     options = merge_options(options)
-#     layout_and_params = case layout
-#                         when :linear
-#                           [Android::Widget::LinearLayout, Android::Widget::LinearLayout::LayoutParams]
-#                         when :relative
-#                           [Android::Widget::RelativeLayout, Android::Widget::RelativeLayout::LayoutParams]
-#                         when :absolute
-#                           [Android::Widget::AbsoluteLayout, Android::Widget::AbsoluteLayout::LayoutParams]
-#                         else
-#                           layout
-#                         end
-#     {
-#       layout: nil,
-#       layout_class: layout_and_params[0],
-#       params_class: layout_and_params[1],
-#       layout_sym: layout,
-#       parent: options[:parent],
-#     }
-#   end
-#
-#   def merge_options(options)
-#     {
-#       w: :mp,
-#       h: :wc,
-#       orientation: :vertical,
-#       weight: 0,
-#       weight_sum: 0,
-#       parent: nil,
-#       click: nil,
-#       id: nil,
-#     }.merge(options)
-#   end
-#
-#   def get_width(options, layout)
-#     case options[:w]
-#     when :mp, :match_parent
-#       layout[:params_class]::MATCH_PARENT
-#     when :wc, :wrap_content
-#       layout[:params_class]::WRAP_CONTENT
-#     else
-#       options[:w]
-#     end
-#   end
-#
-#   def get_height(options, layout)
-#     case options[:h]
-#     when :mp, :match_parent
-#       layout[:params_class]::MATCH_PARENT
-#     when :wc, :wrap_content
-#       layout[:params_class]::WRAP_CONTENT
-#     else
-#       options[:h]
-#     end
-#   end
-#
-#   def get_orientation(options, layout)
-#     case options[:orientation]
-#     when :vertical, :v
-#       layout[:layout_class]::VERTICAL
-#     when :horizontal, :h
-#       layout[:layout_class]::HORIZONTAL
-#     else
-#       raise 'Please set either :horizontal or :vertical for the orientation'
-#     end
-#   end
-#
-#   def create_layout_with_params(layout, options)
-#     options = merge_options(options)
-#     width = get_width(options, layout)
-#     height = get_height(options, layout)
-#     orientation = get_orientation(options, layout)
-#     my_layout = layout[:layout_class].new(self.activity)
-#     layout_params = layout[:params_class].new(width, height)
-#     layout_params.weight = options[:weight] if layout[:layout_sym] == :linear
-#     my_layout.setLayoutParams(layout_params)
-#     my_layout.setOrientation(orientation) if layout[:layout_sym] == :linear
-#     my_layout.setWeightSum(options[:weight_sum]) if layout[:layout_sym] == :linear
-#     my_layout
-#   end
-#
-#   def create_view_layout_params(view, layout, options)
-#     options = merge_options(options)
-#     width = get_width(options, layout)
-#     height = get_height(options, layout)
-#     layout_params = layout[:params_class].new(width, height)
-#     layout_params.weight = options[:weight]
-#     view.setText(options[:text]) unless options[:text].nil?
-#     view.setLayoutParams(layout_params)
-#     view.onClickListener = AQClickListener.new(self.activity, options) if options[:click]
-#     view.setId(options[:id]) if options[:id]
-#     layout[:layout].addView(view)
-#     view
-#   end
-#
-#   def find(view_id)
-#     self.activity.findViewById(view_id)
-#   end
-#
-#   def toast(text, options = {})
-#     options = {
-#       gravity: :bottom,
-#       length: :short
-#     }.merge(options)
-#
-#     gravity_options = {
-#       top: Android::View::Gravity::TOP,
-#       left: Android::View::Gravity::LEFT,
-#       right: Android::View::Gravity::RIGHT,
-#       bottom: Android::View::Gravity::BOTTOM,
-#       center: Android::View::Gravity::CENTER,
-#     }
-#
-#     length_options = {
-#       short: Android::Widget::Toast::LENGTH_SHORT,
-#       long: Android::Widget::Toast::LENGTH_LONG,
-#     }
-#
-#     the_toast = Android::Widget::Toast.makeText(self.activity, text, length_options[options[:length]])
-#     the_toast.setGravity(gravity_options[options[:gravity]], 0, 0)
-#     the_toast.show
-#   end
-# end
-#
-# class AQClickListener
-#   attr_accessor :activity, :options
-#
-#   def initialize(activity, options)
-#     self.activity = activity
-#     self.options = options
-#   end
-#
-#   def onClick(view)
-#     self.activity.send(self.options[:click], view)
-#   end
-# end
+module AndroidMotionQuery
+  class View
+    attr_accessor :view, :activity, :stylesheet, :style_name, :layout_params, :options
+
+    def initialize(view, activity, stylesheet, style_name, options = {})
+      self.view = view
+      self.activity = activity
+      self.stylesheet = stylesheet
+      self.style_name = style_name
+      self.options = {
+        parent: nil,
+      }.merge(options)
+    end
+
+    def get
+      self.view
+    end
+
+    def create_android_query_view(view, style_method, options = {}, &block)
+      aqv = View.new(view, self.activity, self.stylesheet, style_method, options)
+      self.stylesheet.apply_style_for(aqv, style_method)
+      self.get.addView(aqv.get)
+      block.call(aqv) if block_given?
+      aqv
+    end
+
+    def text_view(style_method, &block)
+      view = Android::Widget::TextView.new(self.activity)
+      create_android_query_view(view, style_method, {}, &block)
+    end
+    
+    def edit_text(style_method, &block)
+      view = Android::Widget::EditText.new(self.activity)
+      create_android_query_view(view, style_method, {}, &block)
+    end
+    
+    def button(style_method, &block)
+      view = Android::Widget::Button.new(self.activity)
+      create_android_query_view(view, style_method, {}, &block)
+    end
+  end
+
+  class Stylesheet
+    def apply_style_for(view, style_name)
+      style_view = StylesheetElement.new(view)
+      self.send(style_name.to_s, style_view)
+      puts 'applying layout params to view...'
+      view.get.setLayoutParams(style_view.params)
+      puts 'applying params OK...'
+      view
+    end
+  end
+
+  class StylesheetElement
+    attr_accessor :view, :params
+
+    LAYOUT_SIZE_OPTIONS = {
+      mp: Android::View::ViewGroup::LayoutParams::MATCH_PARENT,
+      wc: Android::View::ViewGroup::LayoutParams::WRAP_CONTENT,
+    }
+
+    ORIENTATION_OPTIONS = {
+      vertical: Android::Widget::LinearLayout::VERTICAL,
+      horizontal: Android::Widget::LinearLayout::HORIZONTAL,
+    }
+
+    def initialize(view)
+      self.view = view
+      self.params = Android::View::ViewGroup::LayoutParams.new(LAYOUT_SIZE_OPTIONS[:mp], LAYOUT_SIZE_OPTIONS[:wc])
+      self
+    end
+
+    def text=(t)
+      puts 'setting text for view...'
+      self.view.get.text = t
+    end
+
+    def width=(w)
+      puts 'Setting width...'
+      if w == :mp || w == :wc
+        self.params.width = LAYOUT_SIZE_OPTIONS[w]
+      else
+        self.params.width = w
+      end
+    end
+
+    def height=(h)
+      puts 'Setting height...'
+      if h == :mp || h == :wc
+        self.params.height = LAYOUT_SIZE_OPTIONS[h]
+      else
+        self.params.height = h
+      end
+    end
+
+    def orientation=(o)
+      puts 'Setting orientation...'
+      if o == :vertical || o == :horizontal
+        self.view.get.orientation = ORIENTATION_OPTIONS[o]
+      end
+    end
+    
+    def weight_sum=(number)
+      self.view.get.weightSum = number
+    end
+    
+    def weight=(number)
+      self.params.weight = number
+    end
+    
+    def click=(method_name)
+      self.view.get.onClickListener = AQClickListener.new(self.view.activity, method_name)
+    end
+  end
+  
+  class AQClickListener
+    attr_accessor :activity, :method_name
+    def initialize(activity, method_name)
+      self.activity = activity
+      self.method_name = method_name
+    end
+    
+    def onClick(view)
+      self.activity.send(self.method_name.to_s, view)
+    end
+  end
+end
+
+
+class AndroidQuery
+  attr_accessor :activity, :stylesheet
+  
+  def initialize(activity, stylesheet)
+    self.activity = activity
+    self.stylesheet = stylesheet.new
+    self
+  end
+  
+  def create_android_query_view(view, style_method, options = {})
+    AndroidMotionQuery::View.new(view, self.activity, self.stylesheet, style_method, options)
+  end
+  
+  def linear_layout(style_method, &block)
+    view = Android::Widget::LinearLayout.new(self.activity)
+    aqv = create_android_query_view(view, style_method, {})
+    self.stylesheet.apply_style_for(aqv, style_method)
+    block.call(aqv) if block_given?
+    self.activity.setContentView(aqv.get)
+  end
+  
+  def toast(text, options = {})
+    options = {
+      gravity: :bottom,
+      length: :short
+    }.merge(options)
+
+    gravity_options = {
+      top: Android::View::Gravity::TOP,
+      left: Android::View::Gravity::LEFT,
+      right: Android::View::Gravity::RIGHT,
+      bottom: Android::View::Gravity::BOTTOM,
+      center: Android::View::Gravity::CENTER,
+    }
+
+    length_options = {
+      short: Android::Widget::Toast::LENGTH_SHORT,
+      long: Android::Widget::Toast::LENGTH_LONG,
+    }
+
+    the_toast = Android::Widget::Toast.makeText(self.activity, text, length_options[options[:length]])
+    the_toast.setGravity(gravity_options[options[:gravity]], 0, 0)
+    the_toast.show    
+  end
+end
