@@ -15,7 +15,7 @@ It's intended for developers who prefer to code their UIs rather than use a GUI 
 Add this line to your application's Gemfile:
 
 ```ruby
-  gem 'android_query', '~> 0.0.4'
+  gem 'android_query', '~> 0.0.5'
 ```
 
 And then execute:
@@ -29,45 +29,87 @@ Or install it yourself as:
 ## Usage
 
 ```ruby
-def onCreate(savedInstanceState)
-  super
-  @counter = 0
-  self.aq = AndroidQuery.new(self)
-  aq.layout(:linear, weight_sum: 10, w: :mp, h: :mp) do |linear|
-    aq.edit_text(linear, id: 10, w: :mp, h: :wc)
-    aq.text_view(linear, id: 11, text: "Hello Android Query!", w: :mp, h: :wc, weight: 8)
-    aq.layout(:linear, parent: linear, weight_sum: 2, weight: 1, orientation: :h) do |buttons_layout|
-      aq.button(buttons_layout, text: "+ (plus)", w: :wc, h: :mp, weight: 1, click: :increase_counter)
-      aq.button(buttons_layout, text: "- (minus)", w: :wc, h: :mp, weight: 1, click: :decrease_counter)
-    end
-    aq.layout(:linear, parent: linear, weight_sum: 2, weight: 1) do |sweet|
-      aq.button(sweet, id: 12, text: "This is SO SWEET!", w: :mp, h: :mp, click: :toast_me, weight: 1)
-      aq.button(sweet, id: 13, text: "Change Label", w: :mp, h: :mp, click: :show_message, weight: 1)
+class MainActivity < Android::App::Activity
+  attr_accessor :aq, :counter
+  
+  def onCreate(savedInstanceState)
+    super
+    self.counter = 0
+    self.aq = AndroidQuery.new(self, HomeStyle)
+    self.aq.linear_layout(:top_layout) do |top|
+      top.text_view(:phone_field) # <- the style :phone_field is applied to the text view
+      top.edit_text(:email_field)
+      top.button(:submit_button)
+      top.linear_layout(:counter_layout) do |counter_layout|
+        counter_layout.button(:increment)
+        counter_layout.button(:decrement)
+      end
     end
   end
-end
-
-def toast_me(view)
-  aq.toast("You've been toasted #{@counter} times!", gravity: :center)
-end
-
-def increase_counter(view)
-  @counter += 1
-end
-
-def decrease_counter(view)
-  @counter -= 1
-end
-
-def show_message(view)
-  my_text = aq.find(10)
-  my_label = aq.find(11)
-  my_label.text = my_text.text
-  my_text.text = ""
+  
+  def show_message(view)
+    self.aq.toast("The counter is set at #{self.counter}", gravity: :bottom_right, length: :short)
+  end
+  
+  def increment_counter(view)
+    self.counter += 1
+  end
+  
+  def decrement_counter(view)
+    self.counter -= 1
+  end
 end
 ```
-
+The previous code produces the following app:
 ![Sample Screenshot](screenshot.png)
+
+
+The following is the `HomeStyle` class that styles the screen:
+```ruby
+class HomeStyle < AndroidMotionQuery::Stylesheet
+  def top_layout(v)
+    v.width = :mp # <-- :mp, :wc, or a number
+    v.height = :mp
+    v.orientation = :vertical # <-- or :horizontal
+    v.weight_sum = 10
+  end
+  
+  def phone_field(v)
+    v.text = 'Hello My Style!'
+    v.weight = 4
+  end
+  
+  def email_field(v)
+    v.text = 'This is my email'
+    v.weight = 1
+  end
+  
+  def submit_button(v)
+    v.text = 'Click Me To See'
+    v.weight = 5
+    v.click = :show_message # <-- this would call the show_message(view) method on the activity
+  end
+  
+  def counter_layout(v)
+    v.orientation = :horizontal
+    v.width = :mp 
+    v.height = :wc
+    v.weight_sum = 2
+  end
+  
+  def increment(v)
+    v.text = '+ Increment'
+    v.click = :increment_counter
+    v.weight = 1
+  end
+  
+  def decrement(v)
+    v.text = '- Decrement'
+    v.click = :decrement_counter
+    v.weight = 1
+  end
+end
+```
 
 ## Contributing
 
