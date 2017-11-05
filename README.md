@@ -28,6 +28,9 @@ Or install it yourself as:
 
 ## Usage
 
+The general rule is to create a top-level layout and add views to it.
+Each view should be passed a style method.
+
 ```ruby
 class MainActivity < Android::App::Activity
   attr_accessor :aq, :counter
@@ -37,7 +40,7 @@ class MainActivity < Android::App::Activity
     self.counter = 0
     self.aq = AndroidQuery.new(self, HomeStyle)
     self.aq.linear_layout(:top_layout) do |top|
-      top.text_view(:phone_field) # <- the style :phone_field is applied to the text view
+      top.text_view(:phone_field)
       top.edit_text(:email_field)
       top.button(:submit_button)
       top.linear_layout(:counter_layout) do |counter_layout|
@@ -48,6 +51,9 @@ class MainActivity < Android::App::Activity
   end
   
   def show_message(view)
+    # toast options can be:
+    # for gravity: :bottom, :right, :left, :center, :top, and their combinations
+    # for length: :short, :long
     self.aq.toast("The counter is set at #{self.counter}", gravity: :bottom_right, length: :short)
   end
   
