@@ -12,10 +12,15 @@ module AndroidMotionQuery
         parent: nil,
       }.merge(options)
     end
-
-    def get
-      self.view
-    end
+    
+    # convenience methods
+    def get; self.view end
+    def left; get.getLeft end
+    def right; get.getRight end
+    def bottom; get.getBottom end
+    def top; get.getTop end
+    def width; get.getWidth end
+    def height; get.getHeight end
 
     def create_android_query_view(view, style_method, layout_params, options = {}, &block)
       aqv = View.new(view, self.activity, self.stylesheet, style_method, layout_params, options)
