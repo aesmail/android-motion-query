@@ -74,7 +74,11 @@ module AndroidMotionQuery
       self.params = layout_params.new(LAYOUT_SIZE_OPTIONS[:mp], LAYOUT_SIZE_OPTIONS[:wc])
       self
     end
-
+    
+    def id=(number)
+      self.view.get.id = number
+    end
+    
     def text=(t)
       self.view.get.text = t
     end
@@ -139,6 +143,10 @@ class AndroidQuery
   
   def create_android_query_view(view, style_method, layout_params, options = {})
     AndroidMotionQuery::View.new(view, self.activity, self.stylesheet, style_method, layout_params, options)
+  end
+  
+  def find(id)
+    self.activity.findViewById(id)
   end
   
   def linear_layout(style_method, &block)

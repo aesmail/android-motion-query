@@ -86,6 +86,7 @@ class HomeStyle < AndroidMotionQuery::Stylesheet
   end
   
   def email_field(v)
+    v.id = 5 # we can use aq.find(5) to get the email_field widget
     v.text = 'This is my email'
     v.weight = 1
   end
@@ -116,6 +117,12 @@ class HomeStyle < AndroidMotionQuery::Stylesheet
   end
 end
 ```
+
+## Todo List
+[ ] Set automatic IDs for views
+[ ] Support the most popular android widgets (around 50 widgets)
+[ ] Support @string and @drawable
+[ ] Support easy animations
 
 ## Contributing
 
