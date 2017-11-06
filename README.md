@@ -15,7 +15,7 @@ It's intended for developers who prefer to code their UIs rather than use a GUI 
 Add this line to your application's Gemfile:
 
 ```ruby
-  gem 'android_query', '~> 0.0.5'
+  gem 'android_query', '~> 0.0.6'
 ```
 
 And then execute:
@@ -33,36 +33,31 @@ Each view should be passed a style method.
 
 ```ruby
 class MainActivity < Android::App::Activity
-  attr_accessor :aq, :counter
+  attr_accessor :aq
   
   def onCreate(savedInstanceState)
     super
-    self.counter = 0
     self.aq = AndroidQuery.new(self, HomeStyle)
-    self.aq.linear_layout(:top_layout) do |top|
-      top.text_view(:phone_field)
-      top.edit_text(:email_field)
-      top.button(:submit_button)
-      top.linear_layout(:counter_layout) do |counter_layout|
-        counter_layout.button(:increment)
-        counter_layout.button(:decrement)
+    aq.linear_layout(:top_layout) do |top|
+      top.image_button(:plumbing_button)
+      top.image_button(:electricity_button)
+      top.linear_layout(:directions) do |direction_layout|
+        direction_layout.text_view(:left_text)
+        direction_layout.button(:right_button)
       end
     end
   end
   
-  def show_message(view)
-    # toast options can be:
-    # for gravity: :bottom, :right, :left, :center, :top, and their combinations
-    # for length: :short, :long
-    self.aq.toast("The counter is set at #{self.counter}", gravity: :bottom_right, length: :short)
+  def coffee_message(view)
+    aq.toast('This is a message for COFFEE LOVERS :)', gravity: :center)
   end
   
-  def increment_counter(view)
-    self.counter += 1
+  def random_thing(view)
+    puts "This should be printed when I click the button"
   end
   
-  def decrement_counter(view)
-    self.counter -= 1
+  def another_toast(view)
+    aq.toast("This is a purple", gravity: :top_right, length: :long)
   end
 end
 ```
@@ -75,47 +70,60 @@ The previous code produces the following app:
 The following is the `HomeStyle` class that styles the screen:
 ```ruby
 class HomeStyle < AndroidMotionQuery::Stylesheet
-  def top_layout(v)
-    v.width = :mp # <-- :mp, :wc, or a number
-    v.height = :mp
-    v.orientation = :vertical # <-- or :horizontal
-    v.weight_sum = 10
+  def top_layout(st)
+    st.width = :mp
+    st.height = 0
+    st.weight_sum = 4
+    st.orientation = :vertical
+    st.background_color = '#A87E54'
   end
   
-  def phone_field(v)
-    v.text = 'Hello My Style!'
-    v.weight = 4
+  def plumbing_button(st)
+    st.width = :mp
+    st.margin_top = 10
+    st.margin_bottom = 10
+    st.background_image = 'bench'
+    st.click = :coffee_message
+    shared_button_styles(st)
   end
   
-  def email_field(v)
-    v.id = 5 # we can use aq.find(5) to get the email_field widget
-    v.text = 'This is my email'
-    v.weight = 1
+  def electricity_button(st)
+    st.width = :mp
+    st.background_image = 'flower'
+    st.click = :random_thing
+    shared_button_styles(st)
   end
   
-  def submit_button(v)
-    v.text = 'Click Me To See'
-    v.weight = 5
-    v.click = :show_message # <-- this would call the show_message(view) method on the activity
+  def shared_button_styles(st)
+    st.height = 0
+    st.padding = 0
+    st.margin_left = 10
+    st.margin_right = 10
+    st.scale_type = :fit_xy
+    st.weight = 1.5
   end
   
-  def counter_layout(v)
-    v.orientation = :horizontal
-    v.width = :mp 
-    v.height = :wc
-    v.weight_sum = 2
+  def directions(st)
+    st.orientation = :horizontal
+    st.weight = 1
+    st.weight_sum = 2
+    st.width = :mp
+    st.height = 0
+    st.margin_top = 10
   end
   
-  def increment(v)
-    v.text = '+ Increment'
-    v.click = :increment_counter
-    v.weight = 1
+  def left_text(st)
+    st.weight = 1
+    st.text = 'android_query is AWESOME!'
+    st.text_alignment = :center
   end
   
-  def decrement(v)
-    v.text = '- Decrement'
-    v.click = :decrement_counter
-    v.weight = 1
+  def right_button(st)
+    st.weight = 1
+    st.text = 'Click Me'
+    st.click = :another_toast
+    st.background_color = '#927FD5'
+    st.text_color = :white
   end
 end
 ```
@@ -123,7 +131,8 @@ end
 ## Todo List
 - [ ] Set automatic IDs for views
 - [ ] Support all built-in android widgets (currently android_query supports 4 widgets)
-- [ ] Support @string and @drawable
+- [ ] Support @string
+- [x] Support @drawable
 - [ ] Support easy animations
 
 ## Contributing
