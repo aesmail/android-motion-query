@@ -57,6 +57,7 @@ module AndroidMotionQuery
       style_view = StylesheetElement.new(view, layout_params)
       self.send(style_name.to_s, style_view)
       view.get.setLayoutParams(style_view.params)
+      view.get.tag = view
       view
     end
   end
@@ -151,7 +152,7 @@ class AndroidQuery
   end
   
   def find(id)
-    self.activity.findViewById(id)
+    self.activity.findViewById(id).tag
   end
   
   def linear_layout(style_method, &block)
