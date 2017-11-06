@@ -66,7 +66,9 @@ class MainActivity < Android::App::Activity
   end
 end
 ```
+
 The previous code produces the following app:
+
 ![Sample Screenshot](screenshot.png)
 
 
