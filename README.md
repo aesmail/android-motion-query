@@ -121,10 +121,10 @@ end
 ```
 
 ## Todo List
-[ ] Set automatic IDs for views
-[ ] Support the most popular android widgets (around 50 widgets)
-[ ] Support @string and @drawable
-[ ] Support easy animations
+- [ ] Set automatic IDs for views
+- [ ] Support all built-in android widgets (currently android_query supports 4 widgets)
+- [ ] Support @string and @drawable
+- [ ] Support easy animations
 
 ## Contributing
 
