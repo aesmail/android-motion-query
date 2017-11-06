@@ -50,6 +50,10 @@ module AndroidMotionQuery
       view = Android::Widget::Button.new(self.activity)
       create_android_query_view(view, style_method, self.layout_params, {}, &block)
     end
+    
+    def new_view(view, style_method, &block)
+      create_android_query_view(view, style_method, self.layout_params, {}, &block)
+    end
   end
 
   class Stylesheet
