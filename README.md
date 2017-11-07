@@ -1,13 +1,11 @@
 # Android Query
 
-This gem is in its very early development. Please don't use in production.
+Android Query was created to make android development on RubyMotion as enjoyable and productive as possible.
+It also tries to make an android app look just like a ruby app, without losing any native functionality.
 
-Currently, `android_query` only supports the `LinearLayout`, `EditText`, `TextView`, and `Button` views.
+If you don't like dealing with XML layouts and long method names, `android_query` might be for you.
 
-The goal of `android_query` is to make android development on RubyMotion fun, easy, and quick.
-It's intended for developers who prefer to code their UIs rather than use a GUI editor.
-
-`android_query` was inspired by the wonderful [rmq](http://github.com/infinitered/rmq/) gem.
+`android_query` was inspired by the wonderful [rmq](http://github.com/infinitered/rmq/) gem for iOS.
 
 ## Installation
 
@@ -29,7 +27,46 @@ Or install it yourself as:
 ## Usage
 
 The general rule is to create a top-level layout and add views to it.
-Each view should be passed a style method.
+Each view accepts a style method.
+
+#### Tiny Example:
+
+To create a LinearLayout and add a TextView widget to it:
+
+```ruby
+aq.linear_layout(:layout_style) do |my_layout|
+  my_layout.text_view(:some_information)
+end
+```
+
+The style for the LinearLayout is `:layout_style` and the TextView has a `:some_information` style.
+
+How do you define styles?
+
+Styles are defined in a separate class that inherit from `AndroidMotionQuery::Stylesheet`.
+
+Each style is passed a wrapper of the android view:
+
+```ruby
+def layout_style(st)
+  st.width = :mp # or :wc for MATCH_PARENT and WRAP_CONTENT respectively
+  st.height = :mp # could also provide an integer to be set directly
+  st.background_color = '#CF7D33' # or you can do :white, :black, :green, etc
+  st.orientation = :vertical # or :horizontal
+end
+
+def some_information(st)
+  st.width = :mp
+  st.height = :wc
+  st.text = 'Hello Android Query'
+  st.text_color = :blue
+  st.text_alignment = :center # or :bottom, :top, :center_right, etc
+  st.margin_top = 10
+end
+```
+
+
+#### Complete Example:
 
 ```ruby
 class MainActivity < Android::App::Activity
@@ -130,10 +167,17 @@ end
 
 ## Todo List
 - [ ] Set automatic IDs for views
-- [ ] Support all built-in android widgets (currently android_query supports 4 widgets)
-- [ ] Support @string
-- [x] Support @drawable
-- [ ] Support easy animations
+- [ ] Add wrappers for all built-in android widgets (currently android_query supports 5 widgets)
+- [x] Add support for LinearLayouts
+- [ ] Add support for RelativeLayouts
+- [ ] Add support for FrameLayouts
+- [ ] Add support for AbsoluteLayouts (worth it? AbsoluteLayout is deprecated a long time ago)
+- [x] Add support for working with custom widgets/views (throught `aqv.new_view()`)
+- [ ] Add support for `view.click { block of code }`
+- [ ] Add support for @string values (strings.xml)
+- [x] Add support for @drawable values (images in the resources/drawable directory)
+- [ ] Add support for easy and quick animations
+- [ ] Add support for rounded corners (first attempt failed, this is harder than I thought)
 
 ## Contributing
 
