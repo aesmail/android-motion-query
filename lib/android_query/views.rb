@@ -29,7 +29,6 @@ module AndroidMotionQuery
     def create_android_query_view(view, style_method, layout_params, options = {}, &block)
       aqv = View.new(view, self.activity, self.stylesheet, style_method, layout_params, options)
       self.stylesheet.apply_style_for(aqv, style_method, layout_params)
-      puts "Adding #{aqv.get} to #{self.get}"
       self.get.addView(aqv.get)
       block.call(aqv) if block_given?
       aqv
@@ -80,6 +79,8 @@ module AndroidMotionQuery
       view
     end
   end
+  
+  INPUT_TYPE = Android::Text::InputType
 
   class StylesheetElement
     attr_accessor :view, :params, :radius
@@ -282,21 +283,53 @@ module AndroidMotionQuery
       self.view.get.textColor = AQColor.parse_color(color.to_s)
     end
     
+    def hint=(t)
+      self.view.get.hint = t
+    end
+    
+    INPUT_TYPES = {
+      normal: INPUT_TYPE::TYPE_CLASS_TEXT,
+      password: INPUT_TYPE::TYPE_CLASS_TEXT | INPUT_TYPE::TYPE_TEXT_VARIATION_PASSWORD,
+      visible_password: INPUT_TYPE::TYPE_CLASS_TEXT | INPUT_TYPE::TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
+      number: INPUT_TYPE::TYPE_CLASS_NUMBER,
+      email: INPUT_TYPE::TYPE_CLASS_TEXT | INPUT_TYPE::TYPE_TEXT_VARIATION_EMAIL_ADDRESS,
+      phone: INPUT_TYPE::TYPE_CLASS_PHONE,
+      date: INPUT_TYPE::TYPE_CLASS_DATETIME | INPUT_TYPE::TYPE_DATETIME_VARIATION_DATE,
+      time: INPUT_TYPE::TYPE_CLASS_DATETIME | INPUT_TYPE::TYPE_DATETIME_VARIATION_TIME,
+      datetime: INPUT_TYPE::TYPE_CLASS_DATETIME,
+    }
+    
+    def input_type=(text_type)
+      if INPUT_TYPES.keys.include? text_type
+        self.view.get.inputType = INPUT_TYPES[text_type]
+      else
+        puts "The value #{text_type} is not a supported input_type value. Defaulting to normal text."
+        self.input_type = :normal
+      end
+    end
+    
+    GRAVITY = Android::View::Gravity
+    GRAVITY_OPTIONS = {
+      top: GRAVITY::TOP,
+      left: GRAVITY::LEFT,
+      right: GRAVITY::RIGHT,
+      bottom: GRAVITY::BOTTOM,
+      center: GRAVITY::CENTER,
+      bottom_right: GRAVITY::BOTTOM | GRAVITY::RIGHT,
+      bottom_left: GRAVITY::BOTTOM | GRAVITY::LEFT,
+      center_right: GRAVITY::CENTER | GRAVITY::RIGHT,
+      center_left: GRAVITY::CENTER | GRAVITY::LEFT,
+      top_right: GRAVITY::TOP | GRAVITY::RIGHT,
+      top_left: GRAVITY::TOP | GRAVITY::LEFT,
+    }
+    
     def gravity=(alignment)
-      gravity_options = {
-        top: Android::View::Gravity::TOP,
-        left: Android::View::Gravity::LEFT,
-        right: Android::View::Gravity::RIGHT,
-        bottom: Android::View::Gravity::BOTTOM,
-        center: Android::View::Gravity::CENTER,
-        bottom_right: Android::View::Gravity::BOTTOM | Android::View::Gravity::RIGHT,
-        bottom_left: Android::View::Gravity::BOTTOM | Android::View::Gravity::LEFT,
-        center_right: Android::View::Gravity::CENTER | Android::View::Gravity::RIGHT,
-        center_left: Android::View::Gravity::CENTER | Android::View::Gravity::LEFT,
-        top_right: Android::View::Gravity::TOP | Android::View::Gravity::RIGHT,
-        top_left: Android::View::Gravity::TOP | Android::View::Gravity::LEFT,
-      }
-      self.view.get.gravity = gravity_options[alignment]
+      if GRAVITY_OPTIONS.keys.include? alignment
+        self.view.get.gravity = GRAVITY_OPTIONS[alignment]
+      else
+        puts "The value #{alignment} is not a supported gravity value. Defaulting to center."
+        self.gravity = :center
+      end
     end
   end
   
