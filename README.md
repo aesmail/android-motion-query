@@ -166,6 +166,7 @@ end
 ```
 
 ## Todo List
+- [ ] Refactor - create more "single responsibility" classes and have smaller functions (this will never be "done", it's just here as a constant reminder)
 - [ ] Set automatic IDs for views
 - [ ] Add wrappers for all built-in android widgets (currently android_query supports 5 widgets)
 - [x] Add support for LinearLayouts
