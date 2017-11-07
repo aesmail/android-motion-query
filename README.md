@@ -39,8 +39,8 @@ class MainActivity < Android::App::Activity
     super
     self.aq = AndroidQuery.new(self, HomeStyle)
     aq.linear_layout(:top_layout) do |top|
-      top.image_button(:plumbing_button)
-      top.image_button(:electricity_button)
+      top.image_button(:bench_button)
+      top.image_button(:flower_button)
       top.linear_layout(:directions) do |direction_layout|
         direction_layout.text_view(:left_text)
         direction_layout.button(:right_button)
@@ -78,16 +78,16 @@ class HomeStyle < AndroidMotionQuery::Stylesheet
     st.background_color = '#A87E54'
   end
   
-  def plumbing_button(st)
+  def bench_button(st)
     st.width = :mp
     st.margin_top = 10
     st.margin_bottom = 10
-    st.background_image = 'bench'
+    st.background_image = 'bench' # <-- image is resources/drawable/bench.png
     st.click = :coffee_message
     shared_button_styles(st)
   end
   
-  def electricity_button(st)
+  def flower_button(st)
     st.width = :mp
     st.background_image = 'flower'
     st.click = :random_thing
