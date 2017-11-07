@@ -14,6 +14,8 @@ module AndroidMotionQuery
     end
     
     # convenience methods
+    def id; get.id end
+    def id=(vid); get.id = vid end
     def get; self.view end
     def left; get.getLeft end
     def right; get.getRight end
@@ -41,27 +43,27 @@ module AndroidMotionQuery
 
     def text_view(style_method, &block)
       view = Android::Widget::TextView.new(self.activity)
-      create_android_query_view(view, style_method, self.layout_params, {}, &block)
+      new_view(view, style_method, &block)
     end
     
     def edit_text(style_method, &block)
       view = Android::Widget::EditText.new(self.activity)
-      create_android_query_view(view, style_method, self.layout_params, {}, &block)
+      new_view(view, style_method, &block)
     end
     
     def button(style_method, &block)
       view = Android::Widget::Button.new(self.activity)
-      create_android_query_view(view, style_method, self.layout_params, {}, &block)
+      new_view(view, style_method, &block)
     end
     
     def image_view(style_method, &block)
       view = Android::Widget::ImageView.new(self.activity)
-      create_android_query_view(view, style_method, self.layout_params, {}, &block)
+      new_view(view, style_method, &block)
     end
     
     def image_button(style_method, &block)
       view = Android::Widget::ImageButton.new(self.activity)
-      create_android_query_view(view, style_method, self.layout_params, {}, &block)
+      new_view(view, style_method, &block)
     end
     
     def new_view(view, style_method, &block)
