@@ -1,11 +1,11 @@
-# Android Query
+# Android Motion Query
 
-Android Query was created to make android development on RubyMotion as enjoyable and productive as possible.
+`android_motion_query` was created to make android development on RubyMotion as enjoyable and productive as possible.
 It also tries to make an android app look just like a ruby app, without losing any native functionality.
 
-If you don't like dealing with XML layouts and long method names, `android_query` might be for you.
+If you don't like dealing with XML layouts and long method names, `android_motion_query` might be for you.
 
-`android_query` was inspired by the wonderful [rmq](http://github.com/infinitered/rmq/) gem for iOS.
+`android_motion_query` was inspired by the wonderful [rmq](http://github.com/infinitered/rmq/) gem for iOS.
 
 ## Installation
 
@@ -13,7 +13,7 @@ If you don't like dealing with XML layouts and long method names, `android_query
 Add this line to your application's Gemfile:
 
 ```ruby
-  gem 'android_query', '~> 0.0.6'
+  gem 'android_motion_query', '~> 0.0.7'
 ```
 
 And then execute:
@@ -22,7 +22,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install android_query
+    $ gem install android_motion_query
 
 ## Usage
 
@@ -34,7 +34,7 @@ Each view accepts a style method.
 To create a LinearLayout and add a TextView widget to it:
 
 ```ruby
-aq.linear_layout(:layout_style) do |my_layout|
+amq.linear_layout(:layout_style) do |my_layout|
   my_layout.text_view(:some_information)
 end
 ```
@@ -58,7 +58,7 @@ end
 def some_information(st)
   st.width = :mp
   st.height = :wc
-  st.text = 'Hello Android Query'
+  st.text = 'Hello Android Motion Query'
   st.text_color = :blue
   st.text_alignment = :center # or :bottom, :top, :center_right, etc
   st.margin_top = 10
@@ -69,13 +69,10 @@ end
 #### Complete Example:
 
 ```ruby
-class MainActivity < Android::App::Activity
-  attr_accessor :aq
-  
-  def onCreate(savedInstanceState)
-    super
-    self.aq = AndroidQuery.new(self, HomeStyle)
-    aq.linear_layout(:top_layout) do |top|
+class MainActivity < AMQScreen
+  def on_create(saved_state)
+    amq.stylesheet = HomeStyle
+    amq.linear_layout(:top_layout) do |top|
       top.image_button(:bench_button)
       top.image_button(:flower_button)
       top.linear_layout(:directions) do |direction_layout|
@@ -86,7 +83,7 @@ class MainActivity < Android::App::Activity
   end
   
   def coffee_message(view)
-    aq.toast('This is a message for COFFEE LOVERS :)', gravity: :center)
+    amq.toast('This is a message for COFFEE LOVERS :)', gravity: :center)
   end
   
   def random_thing(view)
@@ -94,7 +91,7 @@ class MainActivity < Android::App::Activity
   end
   
   def another_toast(view)
-    aq.toast("This is a purple", gravity: :top_right, length: :long)
+    amq.toast("This is a purple", gravity: :top_right, length: :long)
   end
 end
 ```
@@ -106,7 +103,7 @@ The previous code produces the following app:
 
 The following is the `HomeStyle` class that styles the screen:
 ```ruby
-class HomeStyle < AndroidMotionQuery::Stylesheet
+class HomeStyle < AMQStylesheet
   def top_layout(st)
     st.width = :mp
     st.height = 0

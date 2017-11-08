@@ -1,10 +1,10 @@
 # coding: utf-8
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "android_query/version"
+require "android_motion_query/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "android_query"
+  spec.name          = "android_motion_query"
   spec.version       = AndroidQuery::VERSION
   spec.authors       = ["Abdullah Esmail"]
   spec.email         = ["abdullah.esmail@gmail.com"]

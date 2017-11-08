@@ -7,7 +7,7 @@ unless defined?(Motion::Project::Config)
 end
 
 Motion::Project::App.setup do |app|
-  Dir.glob(File.join(File.dirname(__FILE__), "android_query/**/*.rb")).each do |file|
+  Dir.glob(File.join(File.dirname(__FILE__), "android_motion_query/**/*.rb")).each do |file|
     app.files.unshift(file)
     app.api_version = '21'
   end
