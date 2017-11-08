@@ -13,7 +13,7 @@ If you don't like dealing with XML layouts and long method names, `android_motio
 Add this line to your application's Gemfile:
 
 ```ruby
-  gem 'android_motion_query', '~> 0.0.7'
+  gem 'android_motion_query', '~> 0.1.0'
 ```
 
 And then execute:
