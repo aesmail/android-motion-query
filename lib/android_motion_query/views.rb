@@ -64,6 +64,11 @@ class AMQView
     new_view(view, style_method, &block)
   end
   
+  def grid_view(style_method, &block)
+    view = Android::Widget::GridView.new(self)
+    new_view(view, style_method, &block)
+  end
+  
   def new_view(view, style_method, &block)
     create_android_query_view(view, style_method, self.layout_params, {}, &block)
   end

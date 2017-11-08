@@ -1,7 +1,8 @@
-RELEASE NOTES FOR v0.0.7
+RELEASE NOTES FOR v0.1.0
+- named gem from 'android_query' to 'android_motion_query'
 - removed all ruby modules since they were causing all kinds of problems and replaced
   them with prefixed class names.
+- added new AMQScreen, AMQStylesheet, and AMQAdapter classes.
 - added support for hint style (st.hint = 'some text').
 - added support for input_type style (st.input_type = :password).
   supported types: :normal, :password, :visible_password, :number, :email, :phone, :date, :time, :datetime.
-  

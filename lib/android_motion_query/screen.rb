@@ -15,4 +15,13 @@ class AMQScreen < Android::App::Activity
     extra.each {|k, v| intent.putExtra(k.to_s, v) }
     startActivity(intent)
   end
+  
+  def extras
+    # TODO implement a way to get information from the putExtra() method
+    # puts self.getIntent.getExtras
+    # if k
+    #   package_name = self.getPackageName
+    #   self.getExtras
+    # self.getExtras
+  end
 end
