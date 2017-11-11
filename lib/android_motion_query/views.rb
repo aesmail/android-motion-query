@@ -14,7 +14,7 @@ class AMQView
   
   # convenience methods
   def id; get.id end
-  def id=(vid); get.id = vid end
+  def id=(vid); get.id = vid; self end
   def get; self.view end
   def left; get.getLeft end
   def right; get.getRight end
@@ -24,7 +24,12 @@ class AMQView
   def height; get.getHeight end
   def text; get.text end
   def text=(t); get.text = t end
-
+  def data(t); get.text = t; self end
+  def tap(&block)
+    AMQTapListener.new(self.activity, self, &block)
+    self
+  end
+  
   def create_android_query_view(view, style_method, layout_params, options = {}, &block)
     aqv = AMQView.new(view, self.activity, self.stylesheet, style_method, layout_params, options)
     self.stylesheet.apply_style_for(aqv, style_method, layout_params)
@@ -65,8 +70,14 @@ class AMQView
   end
   
   def grid_view(style_method, &block)
-    view = Android::Widget::GridView.new(self)
+    view = Android::Widget::GridView.new(self.activity)
     new_view(view, style_method, &block)
+  end
+  
+  def adapter(list, &block)
+    # this method has to be called from a grid_view or similar views (which accept adapters)
+    self.get.adapter = AMQAdapter.new(self.activity, list, &block)
+    self
   end
   
   def new_view(view, style_method, &block)

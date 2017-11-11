@@ -9,3 +9,17 @@ class AMQClickListener
     self.activity.send(self.method_name.to_s, view)
   end
 end
+
+
+class AMQTapListener
+  attr_accessor :activity, :amq, :callback
+  def initialize(activity, amq, &block)
+    self.activity = activity
+    self.callback = block
+    self.amq = amq
+  end
+  
+  def onClick(view)
+    self.callback.call(view)
+  end
+end

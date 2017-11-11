@@ -1,4 +1,65 @@
+# TYPE_FACE = Android::Graphics::TypeFace
+# TYPE_FACE_OPTIONS = {
+#   normal:           TYPE_FACE::Create("sans-serif",            TYPE_FACE::NORMAL),
+#   normal_bold:      TYPE_FACE::Create("sans-serif",            TYPE_FACE::BOLD),
+#   light:            TYPE_FACE::Create("sans-serif-light",      TYPE_FACE::NORMAL),
+#   light_bold:       TYPE_FACE::Create("sans-serif-light",      TYPE_FACE::BOLD),
+#   condensed:        TYPE_FACE::Create("sans-serif-condensed",  TYPE_FACE::NORMAL),
+#   condensed_bold:   TYPE_FACE::Create("sans-serif-condensed",  TYPE_FACE::BOLD),
+# }
+
+VIEW_GROUP_PARAMS = Android::View::ViewGroup::LayoutParams
+LAYOUT_SIZE_OPTIONS = {
+  mp: VIEW_GROUP_PARAMS::MATCH_PARENT,
+  wc: VIEW_GROUP_PARAMS::WRAP_CONTENT,
+}
+
+LINEAR_LAYOUT = Android::Widget::LinearLayout
+ORIENTATION_OPTIONS = {
+  vertical:   LINEAR_LAYOUT::VERTICAL,
+  horizontal: LINEAR_LAYOUT::HORIZONTAL,
+}
+
+SCALE_TYPE = Android::Widget::ImageView::ScaleType
+SCALE_TYPES = {
+  center:         SCALE_TYPE::CENTER,
+  center_crop:    SCALE_TYPE::CENTER_CROP,
+  center_inside:  SCALE_TYPE::CENTER_INSIDE,
+  fit_center:     SCALE_TYPE::FIT_CENTER,
+  fit_end:        SCALE_TYPE::FIT_END,
+  fit_start:      SCALE_TYPE::FIT_START,
+  fit_xy:         SCALE_TYPE::FIT_XY,
+  matrix:         SCALE_TYPE::MATRIX,
+}
+
 INPUT_TYPE = Android::Text::InputType
+INPUT_TYPES = {
+  normal:             INPUT_TYPE::TYPE_CLASS_TEXT,
+  password:           INPUT_TYPE::TYPE_CLASS_TEXT | INPUT_TYPE::TYPE_TEXT_VARIATION_PASSWORD,
+  visible_password:   INPUT_TYPE::TYPE_CLASS_TEXT | INPUT_TYPE::TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
+  number:             INPUT_TYPE::TYPE_CLASS_NUMBER,
+  email:              INPUT_TYPE::TYPE_CLASS_TEXT | INPUT_TYPE::TYPE_TEXT_VARIATION_EMAIL_ADDRESS,
+  phone:              INPUT_TYPE::TYPE_CLASS_PHONE,
+  date:               INPUT_TYPE::TYPE_CLASS_DATETIME | INPUT_TYPE::TYPE_DATETIME_VARIATION_DATE,
+  time:               INPUT_TYPE::TYPE_CLASS_DATETIME | INPUT_TYPE::TYPE_DATETIME_VARIATION_TIME,
+  datetime:           INPUT_TYPE::TYPE_CLASS_DATETIME,
+}
+
+GRAVITY = Android::View::Gravity
+GRAVITY_OPTIONS = {
+  top:          GRAVITY::TOP,
+  left:         GRAVITY::LEFT,
+  right:        GRAVITY::RIGHT,
+  bottom:       GRAVITY::BOTTOM,
+  center:       GRAVITY::CENTER,
+  bottom_right: GRAVITY::BOTTOM | GRAVITY::RIGHT,
+  bottom_left:  GRAVITY::BOTTOM | GRAVITY::LEFT,
+  center_right: GRAVITY::CENTER | GRAVITY::RIGHT,
+  center_left:  GRAVITY::CENTER | GRAVITY::LEFT,
+  top_right:    GRAVITY::TOP | GRAVITY::RIGHT,
+  top_left:     GRAVITY::TOP | GRAVITY::LEFT,
+}
+
 
 class AMQStylesheet
   def apply_style_for(view, style_name, layout_params)
@@ -15,19 +76,9 @@ end
 class AMQStylesheetElement
   attr_accessor :view, :params, :radius
   
-  LAYOUT_SIZE_OPTIONS = {
-    mp: Android::View::ViewGroup::LayoutParams::MATCH_PARENT,
-    wc: Android::View::ViewGroup::LayoutParams::WRAP_CONTENT,
-  }
-
-  ORIENTATION_OPTIONS = {
-    vertical: Android::Widget::LinearLayout::VERTICAL,
-    horizontal: Android::Widget::LinearLayout::HORIZONTAL,
-  }
-
   def initialize(view, layout_params)
     self.view = view
-    self.params = layout_params.new(LAYOUT_SIZE_OPTIONS[:mp], LAYOUT_SIZE_OPTIONS[:wc])
+    self.params = layout_params.new(LAYOUT_SIZE_OPTIONS[:mp], LAYOUT_SIZE_OPTIONS[:mp])
     self
   end
   
@@ -38,6 +89,7 @@ class AMQStylesheetElement
   
   def text=(t)
     self.view.get.text = t
+    self
   end
 
   def width=(w)
@@ -181,28 +233,27 @@ class AMQStylesheetElement
   #   result
   # end
   
+  def border_color=(color)
+    shape = Android::Graphics::Drawable::ShapeDrawable.new
+    shape.shape = Android::Graphics::Drawable::Shapes::RectShape.new
+    shape.paint.color = AMQColor.parse_color(color.to_s)
+    shape.paint.strokeWidth = 1
+    shape.paint.style = Android::Graphics::Paint::Style::STROKE
+    self.view.get.background = shape
+  end
+  
   def background_color=(color)
     self.view.get.backgroundColor = AMQColor.parse_color(color.to_s)
   end
   
-  def background_image=(image_name)
+  def image=(image_name)
     context = self.view.get.getContext
     resource_id = context.getResources.getIdentifier(image_name, "drawable", context.getPackageName)
     self.view.get.setImageResource(resource_id)
   end
   
   def scale_type=(option)
-    scale_types = {
-      center: Android::Widget::ImageView::ScaleType::CENTER,
-      center_crop: Android::Widget::ImageView::ScaleType::CENTER_CROP,
-      center_inside: Android::Widget::ImageView::ScaleType::CENTER_INSIDE,
-      fit_center: Android::Widget::ImageView::ScaleType::FIT_CENTER,
-      fit_end: Android::Widget::ImageView::ScaleType::FIT_END,
-      fit_start: Android::Widget::ImageView::ScaleType::FIT_START,
-      fit_xy: Android::Widget::ImageView::ScaleType::FIT_XY,
-      matrix: Android::Widget::ImageView::ScaleType::MATRIX,
-    }
-    self.view.get.scaleType = scale_types[option]
+    self.view.get.scaleType = SCALE_TYPES[option]
   end
   
   def text_alignment=(alignment)
@@ -213,21 +264,17 @@ class AMQStylesheetElement
     self.view.get.textColor = AMQColor.parse_color(color.to_s)
   end
   
+  # def font=(font)
+  #   if TYPE_FACE_OPTIONS.keys.include? font
+  #     self.view.get.typeFace = TYPE_FACE_OPTIONS[font]
+  #   else
+  #     raise "The value #{font} is not a supported font value. Use one of #{TYPE_FACE_OPTIONS.keys}"
+  #   end
+  # end
+  
   def hint=(t)
     self.view.get.hint = t
   end
-  
-  INPUT_TYPES = {
-    normal: INPUT_TYPE::TYPE_CLASS_TEXT,
-    password: INPUT_TYPE::TYPE_CLASS_TEXT | INPUT_TYPE::TYPE_TEXT_VARIATION_PASSWORD,
-    visible_password: INPUT_TYPE::TYPE_CLASS_TEXT | INPUT_TYPE::TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
-    number: INPUT_TYPE::TYPE_CLASS_NUMBER,
-    email: INPUT_TYPE::TYPE_CLASS_TEXT | INPUT_TYPE::TYPE_TEXT_VARIATION_EMAIL_ADDRESS,
-    phone: INPUT_TYPE::TYPE_CLASS_PHONE,
-    date: INPUT_TYPE::TYPE_CLASS_DATETIME | INPUT_TYPE::TYPE_DATETIME_VARIATION_DATE,
-    time: INPUT_TYPE::TYPE_CLASS_DATETIME | INPUT_TYPE::TYPE_DATETIME_VARIATION_TIME,
-    datetime: INPUT_TYPE::TYPE_CLASS_DATETIME,
-  }
   
   def input_type=(text_type)
     if INPUT_TYPES.keys.include? text_type
@@ -237,21 +284,6 @@ class AMQStylesheetElement
       self.input_type = :normal
     end
   end
-  
-  GRAVITY = Android::View::Gravity
-  GRAVITY_OPTIONS = {
-    top: GRAVITY::TOP,
-    left: GRAVITY::LEFT,
-    right: GRAVITY::RIGHT,
-    bottom: GRAVITY::BOTTOM,
-    center: GRAVITY::CENTER,
-    bottom_right: GRAVITY::BOTTOM | GRAVITY::RIGHT,
-    bottom_left: GRAVITY::BOTTOM | GRAVITY::LEFT,
-    center_right: GRAVITY::CENTER | GRAVITY::RIGHT,
-    center_left: GRAVITY::CENTER | GRAVITY::LEFT,
-    top_right: GRAVITY::TOP | GRAVITY::RIGHT,
-    top_left: GRAVITY::TOP | GRAVITY::LEFT,
-  }
   
   def gravity=(alignment)
     if GRAVITY_OPTIONS.keys.include? alignment

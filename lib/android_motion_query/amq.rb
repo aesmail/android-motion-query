@@ -16,6 +16,14 @@ class AndroidMotionQuery
     self.stylesheet.apply_style_for(self.root, style_method, layout_params)
     block.call(self.root) if block_given?
     self.activity.setContentView(self.root.get)
+    self
+  end
+  
+  def create_standalone_amq_view(view, style_method, layout_params, options = {}, &block)
+    amq_view = AMQView.new(view, self.activity, self.stylesheet, style_method, layout_params, options)
+    self.stylesheet.apply_style_for(amq_view, style_method, layout_params)
+    block.call(amq_view) if block_given?
+    amq_view
   end
   
   def find(id)
@@ -32,6 +40,12 @@ class AndroidMotionQuery
     view = Android::Widget::RelativeLayout.new(self.activity)
     layout_params = Android::Widget::RelativeLayout::Params
     create_android_query_view(view, style_method, layout_params, {}, &block)
+  end
+  
+  def text_view(style_method, &block)
+    view = Android::Widget::TextView.new(self.activity)
+    layout_params = Android::Widget::LinearLayout::LayoutParams
+    create_standalone_amq_view(view, style_method, layout_params, {}, &block)
   end
   
   def toast(text, options = {})
