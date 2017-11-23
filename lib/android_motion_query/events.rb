@@ -17,6 +17,7 @@ class AMQTapListener
     self.activity = activity
     self.callback = block
     self.amq = amq
+    self
   end
   
   def onClick(view)

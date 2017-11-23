@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["abdullah.esmail@gmail.com"]
   spec.summary       = %q{Making RubyMotion android development easy and enjoyable}
   spec.description   = %q{Making RubyMotion android development easy and enjoyable}
-  spec.homepage      = "https://github.com/aesmail/android-query"
+  spec.homepage      = "https://github.com/aesmail/android-motion-query"
   spec.license       = "MIT"
   spec.files         = Dir.glob('lib/**/*.rb') << 'README.md' << 'LICENSE.txt'
   spec.require_paths = ["lib"]

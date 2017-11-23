@@ -47,17 +47,19 @@ INPUT_TYPES = {
 
 GRAVITY = Android::View::Gravity
 GRAVITY_OPTIONS = {
-  top:          GRAVITY::TOP,
-  left:         GRAVITY::LEFT,
-  right:        GRAVITY::RIGHT,
-  bottom:       GRAVITY::BOTTOM,
-  center:       GRAVITY::CENTER,
-  bottom_right: GRAVITY::BOTTOM | GRAVITY::RIGHT,
-  bottom_left:  GRAVITY::BOTTOM | GRAVITY::LEFT,
-  center_right: GRAVITY::CENTER | GRAVITY::RIGHT,
-  center_left:  GRAVITY::CENTER | GRAVITY::LEFT,
-  top_right:    GRAVITY::TOP | GRAVITY::RIGHT,
-  top_left:     GRAVITY::TOP | GRAVITY::LEFT,
+  top:                GRAVITY::TOP,
+  left:               GRAVITY::LEFT,
+  right:              GRAVITY::RIGHT,
+  bottom:             GRAVITY::BOTTOM,
+  center:             GRAVITY::CENTER,
+  center_horizontal:  GRAVITY::CENTER_HORIZONTAL,
+  center_vertical:    GRAVITY::CENTER_VERTICAL,
+  bottom_right:       GRAVITY::BOTTOM | GRAVITY::RIGHT,
+  bottom_left:        GRAVITY::BOTTOM | GRAVITY::LEFT,
+  center_right:       GRAVITY::CENTER | GRAVITY::RIGHT,
+  center_left:        GRAVITY::CENTER | GRAVITY::LEFT,
+  top_right:          GRAVITY::TOP | GRAVITY::RIGHT,
+  top_left:           GRAVITY::TOP | GRAVITY::LEFT,
 }
 
 
@@ -264,6 +266,10 @@ class AMQStylesheetElement
     self.view.get.textColor = AMQColor.parse_color(color.to_s)
   end
   
+  def text_size=(size)
+    self.view.get.textSize = size
+  end
+  
   # def font=(font)
   #   if TYPE_FACE_OPTIONS.keys.include? font
   #     self.view.get.typeFace = TYPE_FACE_OPTIONS[font]
@@ -291,6 +297,15 @@ class AMQStylesheetElement
     else
       puts "The value #{alignment} is not a supported gravity value. Defaulting to center."
       self.gravity = :center
+    end
+  end
+  
+  def layout_gravity=(alignment)
+    if GRAVITY_OPTIONS.keys.include? alignment
+      self.params.gravity = GRAVITY_OPTIONS[alignment]
+    else
+      puts "The value #{alignment} is not a supported gravity value. Defaulting to center."
+      self.params.gravity = :center
     end
   end
 end

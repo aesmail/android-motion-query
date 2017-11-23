@@ -13,7 +13,7 @@ If you don't like dealing with XML layouts and long method names, `android_motio
 Add this line to your application's Gemfile:
 
 ```ruby
-  gem 'android_motion_query', '~> 0.1.0'
+  gem 'android_motion_query', '~> 0.2.0'
 ```
 
 And then execute:
@@ -27,15 +27,15 @@ Or install it yourself as:
 ## Usage
 
 The general rule is to create a top-level layout and add views to it.
-Each view accepts a style method.
+Each view accepts a style name as an argument.
 
 #### Tiny Example:
 
 To create a LinearLayout and add a TextView widget to it:
 
 ```ruby
-amq.linear_layout(:layout_style) do |my_layout|
-  my_layout.text_view(:some_information)
+amq.add(:linear_layout, :layout_style) do |my_layout|
+  my_layout.add(:text_view, :some_information)
 end
 ```
 
@@ -43,7 +43,7 @@ The style for the LinearLayout is `:layout_style` and the TextView has a `:some_
 
 How do you define styles?
 
-Styles are defined in a separate class that inherit from `AndroidMotionQuery::Stylesheet`.
+Styles are defined in a separate class that inherits from `AMQStylesheet`.
 
 Each style is passed a wrapper of the android view:
 
@@ -68,37 +68,110 @@ end
 
 #### Complete Example:
 
+This code creates the following simple calculator app:
+
+![Sample Screenshot](screenshot.png)
+
 ```ruby
-class MainActivity < AMQScreen
-  def on_create(saved_state)
-    amq.stylesheet = HomeStyle
-    amq.linear_layout(:top_layout) do |top|
-      top.image_button(:bench_button)
-      top.image_button(:flower_button)
-      top.linear_layout(:directions) do |direction_layout|
-        direction_layout.text_view(:left_text)
-        direction_layout.button(:right_button)
+class CalculatorScreen < AMQScreen
+  def on_create(state)
+    setup_calculator_variables
+    amq.stylesheet = CalculatorStyle
+    amq.add(:linear_layout, :top_layout) do |top|
+      @result_label = top.add(:text_view, :result_label)
+      top.add(:linear_layout, :buttons_layout) do |bottom|
+        bottom.add(:linear_layout, :row_layout) do |row|
+          row.add(:button, :ac).tap { reset_calculator }
+          row.add(:button, :plus_minus).tap { amq.toast('This is not supported yet') }
+          row.add(:button, :percentage).tap { amq.toast('This is not supported yet') }
+          row.add(:button, :division).tap { save_result_with_operation(:div) }
+        end
+        
+        bottom.add(:linear_layout, :row_layout) do |row|
+          row.add(:button, :seven).tap { add_digit('7') }
+          row.add(:button, :eight).tap { add_digit('8') }
+          row.add(:button, :nine).tap { add_digit('9') }
+          row.add(:button, :multiplication).tap { save_result_with_operation(:mul) }
+        end
+        
+        bottom.add(:linear_layout, :row_layout) do |row|
+          row.add(:button, :four).tap { add_digit('4') }
+          row.add(:button, :five).tap { add_digit('5') }
+          row.add(:button, :six).tap { add_digit('6') }
+          row.add(:button, :minus).tap { save_result_with_operation(:min) }
+        end
+        
+        bottom.add(:linear_layout, :row_layout) do |row|
+          row.add(:button, :one).tap { add_digit('1') }
+          row.add(:button, :two).tap { add_digit('2') }
+          row.add(:button, :three).tap { add_digit('3') }
+          row.add(:button, :plus).tap { save_result_with_operation(:add) }
+        end
+        
+        bottom.add(:linear_layout, :row_layout) do |row|
+          row.add(:button, :zero).tap { add_digit('0') }
+          row.add(:button, :decimal_point).tap { add_decimal }
+          row.add(:button, :equals).tap { calculate_result }
+        end
       end
     end
   end
   
-  def coffee_message(view)
-    amq.toast('This is a message for COFFEE LOVERS :)', gravity: :center)
+  def setup_calculator_variables
+    @start_new_number = true
+    @first_number = 0
+    @result = 0
+    @operation = nil
   end
   
-  def random_thing(view)
-    puts "This should be printed when I click the button"
+  def add_digit(digit)
+    @result_label.text = '' if @start_new_number
+    display = @result_label.text + digit
+    if display['.']
+      display = display.to_f unless digit == '0'
+    else
+      display = display.to_i
+    end
+    @result_label.text = display.to_s
+    @start_new_number = false
   end
   
-  def another_toast(view)
-    amq.toast("This is a purple", gravity: :top_right, length: :long)
+  def add_decimal
+    display = @result_label.text
+    @result_label.text = display + '.'
+  end
+  
+  def reset_calculator
+    @result_label.text = '0'
+    @result = 0
+    @first_number = 0
+    @start_new_number = true
+    @operation = nil
+  end
+  
+  def save_result_with_operation(op)
+    display = @result_label.text
+    @first_number = display.to_f
+    @operation = op
+    @start_new_number = true
+  end
+  
+  def calculate_result
+    display = @result_label.text.to_f
+    case @operation
+    when :add
+      @result = @first_number + display
+    when :min
+      @result = @first_number - display
+    when :mul
+      @result = @first_number * display
+    when :div
+      @result = @first_number / display
+    end
+    @result_label.text = @result.to_s
   end
 end
 ```
-
-The previous code produces the following app:
-
-![Sample Screenshot](screenshot.png)
 
 
 The following is the `HomeStyle` class that styles the screen:

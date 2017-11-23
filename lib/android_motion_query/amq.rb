@@ -30,6 +30,10 @@ class AndroidMotionQuery
     self.root.get.findViewById(id).tag
   end
   
+  def add(view_sym, style, &block)
+    self.send(view_sym, style, &block)
+  end
+  
   def linear_layout(style_method, &block)
     view = Android::Widget::LinearLayout.new(self.activity)
     layout_params = Android::Widget::LinearLayout::LayoutParams
@@ -38,7 +42,13 @@ class AndroidMotionQuery
   
   def relative_layout(style_method, &block)
     view = Android::Widget::RelativeLayout.new(self.activity)
-    layout_params = Android::Widget::RelativeLayout::Params
+    layout_params = Android::Widget::RelativeLayout::LayoutParams
+    create_android_query_view(view, style_method, layout_params, {}, &block)
+  end
+  
+  def frame_layout(style_method, &block)
+    view = Android::Widget::FrameLayout.new(self.activity)
+    layout_params = Android::Widget::FrameLayout::LayoutParams
     create_android_query_view(view, style_method, layout_params, {}, &block)
   end
   

@@ -4,7 +4,6 @@ class AMQScreen < Android::App::Activity
   def onCreate(savedInstance)
     super
     self.create_amq_object
-    # self.get_extras(savedInstance)
     self.on_create(savedInstance)
   end
     
@@ -15,7 +14,6 @@ class AMQScreen < Android::App::Activity
   def open_screen(screen, extra_data={})
     intent = Android::Content::Intent.new(self, screen)
     extra_data.each do |k, v|
-      puts "Putting #{k} as #{v}"
       intent.putExtra(k.to_s, v)
     end
     startActivity(intent)
@@ -23,19 +21,9 @@ class AMQScreen < Android::App::Activity
   
   def extra(key)
     data = getIntent.getExtra(key.to_s)
-    new_data = Android::Text::SpannableStringBuilder.new(data)
-    new_data.toString
-    # case data.class
-    # when Android::Text::SpannableStringBuilder
-    #   puts "---------------------------------- converting SpannableStringBuilder"
-    #   data.toString
-    # when Android::Text::SpannableString
-    #   puts "---------------------------------- converting SpannableString"
-    #   new_data = Android::Text::SpannableStringBuilder.new(data)
-    #   new_data.toString
-    # else
-    #   puts "---------------------------------- converting CUSTOM #{data.class}"
-    #   data
-    # end
+    if data.nil?
+      puts "WARNING: The extra data (#{key.to_s}) you are trying to get is nil"
+    end
+    data
   end
 end
