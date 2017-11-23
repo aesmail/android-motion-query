@@ -173,67 +173,8 @@ class CalculatorScreen < AMQScreen
 end
 ```
 
+Please check the `example` folder for the complete calculator app code.
 
-The following is the `HomeStyle` class that styles the screen:
-```ruby
-class HomeStyle < AMQStylesheet
-  def top_layout(st)
-    st.width = :mp
-    st.height = 0
-    st.weight_sum = 4
-    st.orientation = :vertical
-    st.background_color = '#A87E54'
-  end
-  
-  def bench_button(st)
-    st.width = :mp
-    st.margin_top = 10
-    st.margin_bottom = 10
-    st.background_image = 'bench' # <-- image is resources/drawable/bench.png
-    st.click = :coffee_message
-    shared_button_styles(st)
-  end
-  
-  def flower_button(st)
-    st.width = :mp
-    st.background_image = 'flower'
-    st.click = :random_thing
-    shared_button_styles(st)
-  end
-  
-  def shared_button_styles(st)
-    st.height = 0
-    st.padding = 0
-    st.margin_left = 10
-    st.margin_right = 10
-    st.scale_type = :fit_xy
-    st.weight = 1.5
-  end
-  
-  def directions(st)
-    st.orientation = :horizontal
-    st.weight = 1
-    st.weight_sum = 2
-    st.width = :mp
-    st.height = 0
-    st.margin_top = 10
-  end
-  
-  def left_text(st)
-    st.weight = 1
-    st.text = 'android_query is AWESOME!'
-    st.text_alignment = :center
-  end
-  
-  def right_button(st)
-    st.weight = 1
-    st.text = 'Click Me'
-    st.click = :another_toast
-    st.background_color = '#927FD5'
-    st.text_color = :white
-  end
-end
-```
 
 ## Todo List
 - [ ] Refactor - create more "single responsibility" classes and have smaller functions (this will never be "done", it's just here as a constant reminder)
@@ -241,10 +182,10 @@ end
 - [ ] Add wrappers for all built-in android widgets (currently android_query supports 5 widgets)
 - [x] Add support for LinearLayouts
 - [ ] Add support for RelativeLayouts
-- [ ] Add support for FrameLayouts
+- [x] Add support for FrameLayouts
 - [ ] Add support for AbsoluteLayouts (worth it? AbsoluteLayout is deprecated a long time ago)
-- [x] Add support for working with custom widgets/views (throught `aqv.new_view()`)
-- [ ] Add support for `view.click { block of code }`
+- [x] Add support for working with custom widgets/views (through `amq.new_view()`)
+- [x] Add support for `amq.tap { block of code }` for `onClickListener` events
 - [ ] Add support for @string values (strings.xml)
 - [x] Add support for @drawable values (images in the resources/drawable directory)
 - [ ] Add support for easy and quick animations
