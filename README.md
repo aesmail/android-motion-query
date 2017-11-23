@@ -173,7 +173,7 @@ class CalculatorScreen < AMQScreen
 end
 ```
 
-Please check the `example` folder for the complete calculator app code.
+Please check the `examples` folder for the complete calculator code in addition to other demo apps.
 
 
 ## Todo List
