@@ -248,6 +248,12 @@ class AMQStylesheetElement
     self.view.get.backgroundColor = AMQColor.parse_color(color.to_s)
   end
   
+  def background_image=(image_name)
+    context = self.view.get.getContext
+    resource_id = context.getResources.getIdentifier(image_name, "drawable", context.getPackageName)
+    self.view.get.backgroundResource = resource_id
+  end
+  
   def image=(image_name)
     context = self.view.get.getContext
     resource_id = context.getResources.getIdentifier(image_name, "drawable", context.getPackageName)
@@ -280,6 +286,10 @@ class AMQStylesheetElement
   
   def hint=(t)
     self.view.get.hint = t
+  end
+  
+  def alpha=(value)
+    self.view.get.alpha = value
   end
   
   def input_type=(text_type)

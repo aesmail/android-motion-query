@@ -11,6 +11,5 @@ end
 Motion::Project::App.setup do |app|
   # Use `rake config' to see complete project settings.
   app.name = 'AMQ Calculator'
-  app.package = 'com.kaffeinatedbits.calculator'
   app.main_activity = 'CalculatorScreen'
 end

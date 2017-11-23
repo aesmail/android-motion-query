@@ -1,0 +1,19 @@
+PATH
+  remote: ../..
+  specs:
+    android_motion_query (0.2.1)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    rake (12.2.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  android_motion_query!
+  rake
+
+BUNDLED WITH
+   1.16.0
