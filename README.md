@@ -179,7 +179,7 @@ Please check the `examples` folder for the complete calculator code in addition 
 ## Todo List
 - [ ] Refactor - create more "single responsibility" classes and have smaller functions (this will never be "done", it's just here as a constant reminder)
 - [ ] Set automatic IDs for views
-- [ ] Add wrappers for all built-in android widgets (currently android_query supports 5 widgets)
+- [ ] Add wrappers for all built-in android widgets (currently supports around 10 widgets)
 - [x] Add support for LinearLayouts
 - [ ] Add support for RelativeLayouts
 - [x] Add support for FrameLayouts
