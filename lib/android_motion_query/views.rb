@@ -59,6 +59,11 @@ class AMQView
     lp = Android::Widget::FrameLayout::LayoutParams
     create_android_query_view(view, style_method, lp, {}, &block)
   end
+  
+  def plain_view(style_method, &block)
+    view = Android::View::View.new(self.activity)
+    new_view(view, style_method, &block)
+  end
 
   def text_view(style_method, &block)
     view = Android::Widget::TextView.new(self.activity)

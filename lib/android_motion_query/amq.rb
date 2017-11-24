@@ -12,7 +12,7 @@ class AndroidMotionQuery
   end
     
   def create_android_query_view(view, style_method, layout_params, options = {}, &block)
-    self.root = AMQView.new(view, self.activity, self.stylesheet, style_method, layout_params, options)
+    self.root ||= AMQView.new(view, self.activity, self.stylesheet, style_method, layout_params, options)
     self.stylesheet.apply_style_for(self.root, style_method, layout_params)
     block.call(self.root) if block_given?
     self.activity.setContentView(self.root.get)
@@ -30,32 +30,38 @@ class AndroidMotionQuery
     self.root.get.findViewById(id).tag
   end
   
-  def add(view_sym, style, &block)
-    self.send(view_sym, style, &block)
+  def add(view_sym, style_method, &block)
+    view, layout_params = self.send(view_sym, &block)
+    create_android_query_view(view, style_method, layout_params, {}, &block)
   end
   
-  def linear_layout(style_method, &block)
+  def add_alone(view_sym, style_method, &block)
+    view, layout_params = self.send(view_sym, &block)
+    create_standalone_amq_view(view, style_method, layout_params, {}, &block)
+  end
+  
+  def linear_layout(&block)
     view = Android::Widget::LinearLayout.new(self.activity)
     layout_params = Android::Widget::LinearLayout::LayoutParams
-    create_android_query_view(view, style_method, layout_params, {}, &block)
+    [view, layout_params]
   end
   
-  def relative_layout(style_method, &block)
+  def relative_layout(&block)
     view = Android::Widget::RelativeLayout.new(self.activity)
     layout_params = Android::Widget::RelativeLayout::LayoutParams
-    create_android_query_view(view, style_method, layout_params, {}, &block)
+    [view, layout_params]
   end
   
-  def frame_layout(style_method, &block)
+  def frame_layout(&block)
     view = Android::Widget::FrameLayout.new(self.activity)
     layout_params = Android::Widget::FrameLayout::LayoutParams
-    create_android_query_view(view, style_method, layout_params, {}, &block)
+    [view, layout_params]
   end
   
-  def text_view(style_method, &block)
+  def text_view(&block)
     view = Android::Widget::TextView.new(self.activity)
     layout_params = Android::Widget::LinearLayout::LayoutParams
-    create_standalone_amq_view(view, style_method, layout_params, {}, &block)
+    [view, layout_params]
   end
   
   def toast(text, options = {})

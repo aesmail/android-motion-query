@@ -318,4 +318,16 @@ class AMQStylesheetElement
       self.params.gravity = :center
     end
   end
+  
+  def number_of_columns=(columns)
+    self.view.get.numColumns = columns
+  end
+  
+  def stretch_mode=(mode)
+    self.view.get.stretchMode = mode
+  end
+  
+  def vertical_spacing=(space)
+    self.view.get.verticalSpacing = space
+  end
 end
