@@ -1,7 +1,7 @@
 PATH
   remote: ../..
   specs:
-    android_motion_query (0.2.1)
+    android_motion_query (0.2.2)
 
 GEM
   remote: https://rubygems.org/
