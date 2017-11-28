@@ -12,7 +12,7 @@ class SocialScreen < AMQScreen
     amq.json.get("https://jsonplaceholder.typicode.com/users/") do |response|
       if response.success?
         @users = response.result
-        # TODO @users is not an array, it's a JSONArray and needs to be converted to a ruby array
+        # TODO @users is not an actual array, it's a JSONArray and needs to be converted to a ruby array
         @user_grid.adapter(@users) do |user|
           amq.add_alone(:linear_layout, :user_layout) do |user_layout|
             user_layout.add(:text_view, :user_name).text = user.get("name")
