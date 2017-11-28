@@ -93,4 +93,8 @@ class AndroidMotionQuery
     the_toast.setGravity(gravity_options[options[:gravity]], 0, 0)
     the_toast.show    
   end
+  
+  def json
+    @json ||= AMQJSONFetch.new(self.activity)
+  end
 end

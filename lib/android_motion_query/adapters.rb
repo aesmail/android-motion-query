@@ -9,7 +9,7 @@ class AMQAdapter < Android::Widget::BaseAdapter
   end
   
   def getCount
-    self.items.count
+    self.items.length
   end
   
   def getItemId(position)

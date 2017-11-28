@@ -101,6 +101,11 @@ class AMQView
     self
   end
   
+  def reload()
+    self.get.adapter.notifyDataSetChanged
+    self
+  end
+  
   def new_view(view, style_method, &block)
     create_android_query_view(view, style_method, self.layout_params, {}, &block)
   end

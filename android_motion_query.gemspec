@@ -14,5 +14,6 @@ Gem::Specification.new do |spec|
   spec.license       = "MIT"
   spec.files         = Dir.glob('lib/**/*.rb') << 'README.md' << 'LICENSE.txt'
   spec.require_paths = ["lib"]
+  spec.add_runtime_dependency "motion-gradle"
   spec.add_development_dependency "rake"
 end

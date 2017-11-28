@@ -18,33 +18,33 @@ class CalculatorScreen < AMQScreen
         bottom.add(:linear_layout, :row_layout) do |row|
           row.add(:button, :seven).tap { add_digit('7') }
           row.add(:button, :eight).tap { add_digit('8') }
-          row.add(:button, :nine).tap { add_digit('9') }
+          row.add(:button, :nine).tap  { add_digit('9') }
           row.add(:button, :multiplication).tap { save_result_with_operation(:mul) }
         end
         
         bottom.add(:linear_layout, :row_layout) do |row|
           row.add(:button, :four).tap { add_digit('4') }
           row.add(:button, :five).tap { add_digit('5') }
-          row.add(:button, :six).tap { add_digit('6') }
+          row.add(:button, :six).tap  { add_digit('6') }
           row.add(:button, :minus).tap { save_result_with_operation(:min) }
         end
         
         bottom.add(:linear_layout, :row_layout) do |row|
-          row.add(:button, :one).tap { add_digit('1') }
-          row.add(:button, :two).tap { add_digit('2') }
+          row.add(:button, :one).tap   { add_digit('1') }
+          row.add(:button, :two).tap   { add_digit('2') }
           row.add(:button, :three).tap { add_digit('3') }
-          row.add(:button, :plus).tap { save_result_with_operation(:add) }
+          row.add(:button, :plus).tap  { save_result_with_operation(:add) }
         end
         
         bottom.add(:linear_layout, :row_layout) do |row|
-          row.add(:button, :zero).tap { add_digit('0') }
-          row.add(:button, :decimal_point).tap { add_decimal }
-          row.add(:button, :equals).tap { calculate_result }
+          row.add(:button, :zero).tap           { add_digit('0') }
+          row.add(:button, :decimal_point).tap  { add_decimal }
+          row.add(:button, :equals).tap         { calculate_result }
         end
       end
     end
   end
-  
+    
   def add_digit(digit)
     @result_label.text = '' if @start_new_number
     display = @result_label.text + digit

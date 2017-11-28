@@ -324,6 +324,7 @@ class AMQStylesheetElement
   end
   
   def stretch_mode=(mode)
+    # TODO add shortcuts for stretch modes
     self.view.get.stretchMode = mode
   end
   
